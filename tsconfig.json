@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"target": "es6",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "outDir": "./dist",
+    "module": "es6",
+    "jsx": "react",
+    "noImplicitAny": true,
+	},
+	"include": [ "./src/**/*.tsx", "src/index.tsx" ],
+}
