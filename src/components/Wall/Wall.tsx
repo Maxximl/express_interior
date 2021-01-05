@@ -1,9 +1,9 @@
 import * as THREE from "three";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { useLoader } from "react-three-fiber";
-import { useGLTF } from "drei";
-import { Mesh } from "three";
+import { useGLTF, useTexture } from "drei";
+import { Mesh, MeshStandardMaterial, Texture } from "three";
 import { IWallProps } from "./Wall.types";
 
 export const Wall: React.FC<IWallProps> = (props) => {
@@ -15,33 +15,46 @@ export const Wall: React.FC<IWallProps> = (props) => {
     name,
     pathToMaterial,
   } = props;
-  const [texture, setTexture] = useState(null);
+  //   const [texture, setTexture] = useState(null);
+  const wall = useRef<THREE.Mesh>(null);
+
+  const texture = useMemo(
+    () => loadMaterial(pathToMaterial, selectedName === name),
+    [pathToMaterial]
+  );
+
   useEffect(() => {
-    const texture = loadMaterial(pathToMaterial, selectedName === name);
-    setTexture(texture);
-  }, [pathToMaterial]);
-  //   const texture = useMemo(
-  //     () => loadMaterial(pathToMaterial, selectedName === name),
-  //     [pathToMaterial]
-  //   );
-  console.log(texture);
+    if (texture) {
+      wall.current.material = new MeshStandardMaterial({
+        side: THREE.DoubleSide,
+        map: texture,
+      });
+    }
+  }, [texture]);
 
-  const color = selectedName === name ? "hotpink" : outerColor;
+  //   useEffect(() => {
+  //     if (texture) {
+  //       wall.current.material = new MeshStandardMaterial({
+  //         side: THREE.DoubleSide,
+  //         color,
+  //         // map: texture,
+  //       });
+  //     }
+  //   }, [texture]);
+
+  //   const color = selectedName === name ? "hotpink" : outerColor;
   return (
-    <mesh {...props}>
+    <mesh
+      {...props}
+      ref={wall}
+      material={
+        new MeshStandardMaterial({
+          side: THREE.DoubleSide,
+          //   color,
+        })
+      }
+    >
       <planeBufferGeometry args={[width, height]} />
-
-      {texture && (
-        <meshStandardMaterial
-          attach="material"
-          transparent
-          side={THREE.DoubleSide}
-          color={color}
-        >
-          <primitive attach="map" object={texture} />
-        </meshStandardMaterial>
-      )}
-      {/* <meshStandardMaterial color={color} side={THREE.DoubleSide} /> */}
     </mesh>
   );
 };

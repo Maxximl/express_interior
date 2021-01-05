@@ -38,7 +38,6 @@ export const Canvas = () => {
       console.log(selectedItem);
       model.traverse((child) => {
         if (child instanceof Mesh) {
-          debugger;
           const prevMaterial = child.material;
           if (selectedItem === child.name) {
             const mtrl = new THREE.MeshBasicMaterial({
@@ -58,7 +57,6 @@ export const Canvas = () => {
       mouse.y = -(event.offsetY / canvas.clientHeight) * 2 + 1;
 
       raycaster.setFromCamera(mouse, camera);
-      debugger;
 
       let intersects = raycaster.intersectObjects(model.children);
 

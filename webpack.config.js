@@ -13,12 +13,18 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".css", ".scss"],
   },
   devServer: {
-    host: "0.0.0.0",
+    // host: "0.0.0.0",
     port: 3000, //port that we're using for local host (localhost:8080)
-    disableHostCheck: true,
+    // disableHostCheck: true,
     contentBase: path.join(__dirname, "public"), //tells webpack to serve from the public folder
     publicPath: "/",
     hot: true,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Headers":
+        "X-Requested-With, content-type, Authorization",
+    },
   },
   module: {
     rules: [

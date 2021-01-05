@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "@material-ui/core";
 import { IControlsProps } from "./Controls.type";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../store";
+import { addElement } from "../../reducers/elements.thunk";
+import { Vector3 } from "three";
 
 export const Controls: React.FC<IControlsProps> = (props) => {
-  const { onPathToTextureChanged } = props;
+  const dispatch = useDispatch<AppDispatch>();
+  const { onPathToTextureChanged, handleOnToolSelected } = props;
   const [pathToTexture, setPathToTexture] = useState<string>("");
 
   useEffect(() => {
@@ -15,14 +20,24 @@ export const Controls: React.FC<IControlsProps> = (props) => {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => setPathToTexture("assets/white_wall.jpg")}
+        onClick={() => {
+          setPathToTexture("assets/white_wall.jpg");
+          dispatch(
+            addElement("Max", "assets/white_wall.jpg", { x: 0, y: 0, z: 0 })
+          );
+        }}
       >
         Бетон
       </Button>
       <Button
         variant="contained"
         color="primary"
-        onClick={() => setPathToTexture("assets/white_wood.jpg")}
+        onClick={() => {
+          setPathToTexture("assets/white_wood.jpg");
+          dispatch(
+            addElement("Max2", "assets/white_wood.jpg", { x: 0, y: 0, z: 0 })
+          );
+        }}
       >
         Дерево
       </Button>
@@ -53,6 +68,28 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         onClick={() => setPathToTexture("")}
       >
         Удалить материал
+      </Button>
+      {/*///////*/}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOnToolSelected("scale")}
+      >
+        Размер
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOnToolSelected("translate")}
+      >
+        Положение
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOnToolSelected("rotate")}
+      >
+        Вращение
       </Button>
     </div>
   );

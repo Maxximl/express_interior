@@ -8,5 +8,6 @@
     "jsx": "react",
     "noImplicitAny": true,
 	},
-	"include": [ "./src/**/*.tsx", "src/index.tsx" ],
+  "include": [ "./src/**/*.tsx", "src/index.tsx" ],
+  "lib": ["three"]
 }
