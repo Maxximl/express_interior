@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IAddElement, IElementState, ISetPosition, ISetSelectedId } from './elements.types'
+import { IAddElement, IDeleteElement, IElementState, ISetPosition, ISetSelectedId } from './elements.types'
 
 const initialState: IElementState = {
     elements: {}
@@ -21,6 +21,15 @@ const elementsSlice = createSlice({
         setPosition(state, action: PayloadAction<ISetPosition>) {
             const { id, position } = action.payload;
             state.elements[id] = { ...state.elements[id], position };
+        },
+        deleteElement(state, action: PayloadAction<IDeleteElement>) {
+            const { id } = action.payload;
+            for (const elementId in state.elements) {
+                if (elementId === id) {
+                    delete state.elements[id]
+                }
+
+            }
         }
     }
 })

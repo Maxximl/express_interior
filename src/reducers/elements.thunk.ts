@@ -18,3 +18,7 @@ export const setPosition = (id: string, position: Vector): AppThunk => (dispatch
 
     }
 }
+
+export const deleteElement = (id: string): AppThunk => (dispatch: AppDispatch) => {
+    dispatch(elementsSliceActions.deleteElement({ id }));
+}

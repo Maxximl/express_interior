@@ -22,7 +22,11 @@ import { AppDispatch } from "../../store";
 import { RootState } from "../../rootReducer";
 import { IElement } from "../../reducers/elements.types";
 import { Loader } from "../Loader/Loader";
-import { setPosition, setSelectedId } from "../../reducers/elements.thunk";
+import {
+  deleteElement,
+  setPosition,
+  setSelectedId,
+} from "../../reducers/elements.thunk";
 import { Vector3 } from "three";
 
 export const World: React.FC = () => {
@@ -36,6 +40,19 @@ export const World: React.FC = () => {
       elements: Object.values(state.elements.elements),
       selectedId: state.elements.selectedId,
     };
+  });
+
+  useEffect(() => {
+    const onDelKeyPress = (event: any) => {
+      debugger;
+      if (event.key === "Delete") {
+        if (selectedId) {
+          dispatch(deleteElement(selectedId));
+        }
+      }
+    };
+    document.addEventListener("keydown", onDelKeyPress);
+    return () => document.removeEventListener("keydown", onDelKeyPress);
   });
 
   const [allElements, setAllElements] = useState<IElement[]>(elements);
@@ -56,7 +73,6 @@ export const World: React.FC = () => {
       const controls = transform.current;
       controls.setMode(mode);
       const callback = (event: any) => {
-        // orbit.current.enabled = !event.value;
         const { x, y, z } = event.target?.children[1]?.object.position;
 
         dispatch(
@@ -87,19 +103,18 @@ export const World: React.FC = () => {
       console.log(element.id, element.position);
 
       return !!mode && selected ? (
-        <Suspense fallback={null} key={element.id}>
+        <Suspense fallback={<Loader />} key={element.id}>
           <TransformControls mode={mode} ref={transform} position={[x, y, z]}>
             <Sprite
               path={element.path}
               elementId={element.id}
               onClick={setSelected(element.id)}
-              // position={[0.5, y, z]}
             />
           </TransformControls>
           {/* <OrbitControls ref={orbit} /> */}
         </Suspense>
       ) : (
-        <Suspense fallback={null} key={element.id}>
+        <Suspense fallback={<Loader />} key={element.id}>
           <Sprite
             path={element.path}
             elementId={element.id}

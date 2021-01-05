@@ -38,3 +38,7 @@ export interface ISetPosition {
     id: string;
     position: Vector;
 }
+
+export interface IDeleteElement {
+    id: string;
+}
