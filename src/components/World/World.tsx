@@ -17,16 +17,17 @@ import { Room } from "../Room/Room";
 import { Controls } from "../Controls";
 import { Sprite } from "../Sprite/Sprite";
 import { DragControls } from "three/examples/jsm/controls/DragControls";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch } from "../../store";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import store, { AppDispatch } from "../../store";
 import { RootState } from "../../rootReducer";
-import { IElement } from "../../reducers/elements.types";
+import { IElement } from "../../reducers/elements/elements.types";
 import { Loader } from "../Loader/Loader";
 import {
   deleteElement,
   setPosition,
+  setScale,
   setSelectedId,
-} from "../../reducers/elements.thunk";
+} from "../../reducers/elements/elements.thunk";
 import { Vector3 } from "three";
 
 export const World: React.FC = () => {
@@ -34,7 +35,7 @@ export const World: React.FC = () => {
   const [pathToTexture, setPathToTexture] = useState<string>("");
   const orbit = useRef<OrbitControls>();
   const transform = useRef<TransformControls>();
-  const [mode, setMode] = useState<string>(null);
+  const [mode, setMode] = useState<string>("translate");
   const { elements, selectedId } = useSelector((state: RootState) => {
     return {
       elements: Object.values(state.elements.elements),
@@ -53,7 +54,7 @@ export const World: React.FC = () => {
     };
     document.addEventListener("keydown", onDelKeyPress);
     return () => document.removeEventListener("keydown", onDelKeyPress);
-  });
+  }, [selectedId]);
 
   const [allElements, setAllElements] = useState<IElement[]>(elements);
   useEffect(() => {
@@ -73,15 +74,21 @@ export const World: React.FC = () => {
       const controls = transform.current;
       controls.setMode(mode);
       const callback = (event: any) => {
-        const { x, y, z } = event.target?.children[1]?.object.position;
+        const {
+          x: posX,
+          y: posY,
+          z: posZ,
+        } = event.target?.children[1]?.object.position;
+        const {
+          x: scaleX,
+          y: scaleY,
+          z: scaleZ,
+        } = event.target?.children[1]?.object.scale;
+        const { elementId } = event.target?.children[0]?.object?.children[0];
 
-        dispatch(
-          setPosition(
-            event.target?.children[0]?.object?.children[0]?.elementId,
-            { x: x, y: y, z: z }
-          )
-        );
-        console.log(event);
+        dispatch(setPosition(elementId, { x: posX, y: posY, z: posZ }));
+
+        dispatch(setScale(elementId, { x: scaleX, y: scaleY, z: scaleZ }));
       };
       controls.addEventListener("dragging-changed", callback);
       return () => controls.removeEventListener("dragging-changed", callback);
@@ -90,6 +97,7 @@ export const World: React.FC = () => {
 
   const setSelected = (id: string) => (event: any): void => {
     event.stopPropagation();
+    debugger;
     if (id !== selectedId) {
       dispatch(setSelectedId(id));
     }
@@ -99,19 +107,25 @@ export const World: React.FC = () => {
     debugger;
     return elems.map((element) => {
       const selected = selectedId === element.id;
-      const { x, y, z } = element.position;
-      console.log(element.id, element.position);
+      const { x: posX, y: posY, z: posZ } = element.position;
+      const { x: scaleX, y: scaleY, z: scaleZ } = element.scale;
 
-      return !!mode && selected ? (
+      return selected ? (
         <Suspense fallback={<Loader />} key={element.id}>
-          <TransformControls mode={mode} ref={transform} position={[x, y, z]}>
+          <TransformControls
+            mode={mode}
+            ref={transform}
+            position={[posX, posY, posZ]}
+            scale={[scaleX, scaleY, scaleZ]}
+            onClick={setSelected(element.id)}
+          >
             <Sprite
               path={element.path}
               elementId={element.id}
-              onClick={setSelected(element.id)}
+              // onClick={setSelected(element.id)}
             />
           </TransformControls>
-          {/* <OrbitControls ref={orbit} /> */}
+          <OrbitControls ref={orbit} />
         </Suspense>
       ) : (
         <Suspense fallback={<Loader />} key={element.id}>
@@ -119,9 +133,10 @@ export const World: React.FC = () => {
             path={element.path}
             elementId={element.id}
             onClick={setSelected(element.id)}
-            position={[x, y, z]}
+            position={[posX, posY, posZ]}
+            scale={[scaleX, scaleY, scaleZ]}
           />
-          {/* <OrbitControls ref={orbit} /> */}
+          <OrbitControls ref={orbit} />
         </Suspense>
       );
     });
@@ -137,8 +152,10 @@ export const World: React.FC = () => {
       >
         <Stars />
         <ambientLight intensity={0.5} />
-        <spotLight intensity={0.5} position={[100, 300, 100]} />
-        <Room pathToTexture={pathToTexture} />
+        <spotLight intensity={0.1} position={[150, 300, 100]} />
+        <Provider store={store}>
+          <Room pathToTexture={pathToTexture} />
+        </Provider>
         {renderElements(allElements)}
       </Canvas>
       <Controls

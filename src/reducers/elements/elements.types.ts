@@ -1,11 +1,11 @@
-import { Vector3 } from "three";
 
 export interface IElement {
     id: string;
     name: string;
     path: string;
     selected: boolean;
-    position: Vector;
+    position: IVector;
+    scale: IVector;
 }
 
 export interface IElements {
@@ -25,20 +25,26 @@ export interface IAddElement {
     name: string;
     path: string;
     selected: boolean;
-    position: Vector;
+    position: IVector;
+    scale: IVector;
 }
 
 export interface ISetSelectedId {
     id: string;
 }
 
-export interface Vector { x: number, y: number, z: number };
+export interface IVector { x: number, y: number, z: number };
 
 export interface ISetPosition {
     id: string;
-    position: Vector;
+    position: IVector;
 }
 
 export interface IDeleteElement {
     id: string;
+}
+
+export interface ISetScale {
+    id: string;
+    scale: IVector;
 }

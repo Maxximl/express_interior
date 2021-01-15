@@ -35,7 +35,6 @@ export const Canvas = () => {
 
     const selectObject = (name: string) => {
       selectedItem = name;
-      console.log(selectedItem);
       model.traverse((child) => {
         if (child instanceof Mesh) {
           const prevMaterial = child.material;

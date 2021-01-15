@@ -17,14 +17,8 @@ export const Sprite: React.FC<ISprite> = (props) => {
   const { path } = props;
   const texture = useTexture(path);
 
-  const ref = useRef<ISprite>();
-  useEffect(() => {
-    if (ref.current) {
-      ref.current;
-    }
-  });
   return (
-    <sprite scale={[1, 1, 1]} {...props} ref={ref}>
+    <sprite {...props}>
       <spriteMaterial attach="material" map={texture as Texture} />
     </sprite>
   );

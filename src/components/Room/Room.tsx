@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedId } from "../../reducers/elements/elements.thunk";
 import { Loader } from "../Loader/Loader";
 import { Wall } from "../Wall";
 import { IRoomProps } from "./Room.types";
+import { createRoom, IWall } from "../../reducers/room";
+import { RootState } from "../../rootReducer";
+import { Euler, Vector3 } from "three";
 
 export const Box: React.FC = () => {
   return (
@@ -13,65 +18,40 @@ export const Box: React.FC = () => {
   );
 };
 export const Room: React.FC<IRoomProps> = (props) => {
-  const { pathToTexture } = props;
-  const [selectedName, setSelectedName] = useState<string>("");
-
-  const handleOnClick = (e: any) => {
-    setSelectedName(e.object.name);
+  const dispatch = useDispatch();
+  const handleOnClick = (event: any) => {
+    dispatch(setSelectedId(event.object.elementId));
   };
 
-  return (
-    <group>
-      <Suspense fallback={<Loader />}>
-        <Wall
-          width={2}
-          height={1}
-          outerColor={"gainsboro"}
-          name={"BackWall"}
-          selectedName={selectedName}
-          onClick={handleOnClick}
-          pathToMaterial={pathToTexture}
-        />
-      </Suspense>
-      <Suspense fallback={<Loader />}>
-        <Wall
-          rotation={[0, 4.71239, 0]}
-          position={[1, 0, 1]}
-          width={2}
-          height={1}
-          outerColor={"gainsboro"}
-          name={"RightWall"}
-          onClick={handleOnClick}
-          selectedName={selectedName}
-          pathToMaterial={pathToTexture}
-        />
-      </Suspense>
-      <Suspense fallback={<Loader />}>
-        <Wall
-          rotation={[0, 1.5708, 0]}
-          position={[-1, 0, 1]}
-          width={2}
-          height={1}
-          outerColor={"gainsboro"}
-          name={"LeftWall"}
-          onClick={handleOnClick}
-          selectedName={selectedName}
-          pathToMaterial={pathToTexture}
-        />
-      </Suspense>
-      <Suspense fallback={<Loader />}>
-        <Wall
-          rotation={[Math.PI / 2, 0, 0]}
-          position={[0, -0.5, 0.5]}
-          width={2}
-          height={3}
-          outerColor={"gainsboro"}
-          name={"Floor"}
-          onClick={handleOnClick}
-          selectedName={selectedName}
-          pathToMaterial={pathToTexture}
-        />
-      </Suspense>
-    </group>
-  );
+  useEffect(() => {
+    dispatch(createRoom());
+  }, []);
+
+  const { walls } = useSelector((state: RootState) => {
+    return {
+      walls: Object.values(state.room.walls),
+    };
+  });
+
+  const renderWalls = (walls: IWall[]) => {
+    return walls.map((wall) => {
+      const { x: posX, y: posY, z: posZ } = wall.position;
+      const { x: rotX, y: rotY, z: rotZ } = wall.rotation;
+      return (
+        <Suspense fallback={<Loader />} key={wall.elementId}>
+          <Wall
+            elementId={wall.elementId}
+            width={wall.width}
+            height={wall.height}
+            position={new Vector3(posX, posY, posZ)}
+            rotation={new Euler(rotX, rotY, rotZ)}
+            outerColor={"gainsboro"}
+            onClick={handleOnClick}
+            pathToMaterial={wall.pathToMaterial}
+          />
+        </Suspense>
+      );
+    });
+  };
+  return <group>{renderWalls(walls)}</group>;
 };
