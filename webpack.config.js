@@ -13,19 +13,41 @@ module.exports = {
     extensions: [".ts", ".tsx", ".js", ".css", ".scss"],
   },
   devServer: {
-    // host: "0.0.0.0",
-    port: 3000, //port that we're using for local host (localhost:8080)
+    host: "127.0.0.1",
+    // port: 3000, //port that we're using for local host (localhost:8080)
+    // compress: true,
+    port: 3000,
+    // historyApiFallback: true,
+    historyApiFallback: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:5000",
+        pathRewrite: { "^/api": "" },
+        secure: false,
+        changeOrigin: true,
+      },
+    },
     // disableHostCheck: true,
-    contentBase: path.join(__dirname, "public"), //tells webpack to serve from the public folder
+    contentBase: path.join(__dirname, "dist"), //tells webpack to serve from the public folder
     publicPath: "/",
     hot: true,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-      "Access-Control-Allow-Headers":
-        "X-Requested-With, content-type, Authorization",
-    },
   },
+  // devServer: {
+  //   historyApiFallBack: true,
+  //   // progress: true,
+  //   hot: true,
+  //   // inline: true,
+  //   // https: true,
+  //   port: 3000,
+  //   contentBase: path.resolve(__dirname, "dist"),
+  //   proxy: {
+  //     "/download": {
+  //       target: "http://localhost:5000/",
+  //       secure: false,
+  //       changeOrigin: true,
+  //     },
+  //   },
+  // },
   module: {
     rules: [
       {

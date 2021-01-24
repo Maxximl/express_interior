@@ -11,8 +11,8 @@ const elementsSlice = createSlice({
     initialState,
     reducers: {
         addElement(state, action: PayloadAction<IAddElement>) {
-            const { id, name, path, selected, position, scale } = action.payload;
-            state.elements[id] = { id, name, path, selected, position, scale };
+            const { id, name, path, data, selected, position, scale } = action.payload;
+            state.elements[id] = { id, name, path, selected, position, scale, data };
         },
         setSelectedId(state, action: PayloadAction<ISetSelectedId>) {
             const { id } = action.payload;

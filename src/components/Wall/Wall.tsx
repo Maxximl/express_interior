@@ -27,23 +27,23 @@ export const Wall: React.FC<IWallProps> = (props) => {
     new MeshStandardMaterial({
       side: THREE.DoubleSide,
       color,
-      opacity: 0.3,
-      transparent: true,
     })
   );
 
   useEffect(() => {
-    debugger;
     if (texture) {
-      texture.wrapS = THREE.ClampToEdgeWrapping;
-      texture.wrapT = THREE.ClampToEdgeWrapping;
-      // texture.repeat = new Vector2(10, 10);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      if (props.elementId === "floor") {
+        texture.repeat = new Vector2(10, 20);
+      } else {
+        texture.repeat = new Vector2(10, 5);
+      }
       setMaterial(
         new MeshStandardMaterial({
           side: THREE.DoubleSide,
           map: texture,
           color,
-          opacity: 1,
         })
       );
     } else {
@@ -51,7 +51,6 @@ export const Wall: React.FC<IWallProps> = (props) => {
         new MeshStandardMaterial({
           side: THREE.DoubleSide,
           color,
-          opacity: 1,
         })
       );
     }

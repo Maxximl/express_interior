@@ -10,10 +10,15 @@ import {
 import { Vector3 } from "three";
 import { setMaterial } from "../../reducers/room";
 import { RootState } from "../../rootReducer";
+import { CameraPosition } from "../World/World.types";
 
 export const Controls: React.FC<IControlsProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { onPathToTextureChanged, handleOnToolSelected } = props;
+  const {
+    onPathToTextureChanged,
+    handleOnToolSelected,
+    onCameraPositionChanged,
+  } = props;
   const [pathToTexture, setPathToTexture] = useState<string>("");
   const { selectedId } = useSelector((state: RootState) => {
     return {
@@ -27,6 +32,26 @@ export const Controls: React.FC<IControlsProps> = (props) => {
   const handleOnClick = (path: string) => {
     dispatch(setMaterial(selectedId, path));
   };
+
+  // useEffect(() => {
+  //   const loadImage = async () => {
+  //     const headers: HeadersInit = {};
+  //     let body1 = {
+  //       url:
+  //         "https://hoff.ru/upload/iblock/ef3/ef3527588fb3ac57ca4a48bd70cb2bef.jpg",
+  //     };
+  //     const body2 = JSON.stringify(body1);
+  //     headers["Content-Type"] = "application/json";
+  //     const response = await fetch("/download", {
+  //       method: "GET",
+  //       body: body2,
+  //       headers,
+  //     });
+  //     const data = await response.json();
+  //     console.log(data);
+  //   };
+  //   loadImage();
+  // }, []);
 
   return (
     <div>
@@ -64,6 +89,20 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         onClick={() => handleOnClick("assets/linoleum.jpg")}
       >
         Линолеум
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOnClick("assets/keramo.jpg")}
+      >
+        Плитка
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => handleOnClick("assets/keramo2.jpg")}
+      >
+        Плитка-2
       </Button>
       <Button
         variant="contained"
@@ -137,6 +176,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
             addElement(
               "Bed",
               "assets/bed.png",
+              null,
               { x: 0, y: 0, z: 0 },
               { x: 1, y: 1, z: 1 }
             )
@@ -152,8 +192,27 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         onClick={() => {
           dispatch(
             addElement(
+              "Any",
+              null,
+              "https://hoff.ru/upload/iblock/ef3/ef3527588fb3ac57ca4a48bd70cb2bef.jpg",
+              { x: 0, y: 0, z: 0 },
+              { x: 1, y: 1, z: 1 }
+            )
+          );
+          dispatch(setSelectedId(""));
+        }}
+      >
+        Добавить свой предмет
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => {
+          dispatch(
+            addElement(
               "Comod",
               "assets/comod.png",
+              null,
               { x: 0, y: 0, z: 0 },
               { x: 1, y: 1, z: 1 }
             )
@@ -162,6 +221,20 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         }}
       >
         Добавить комод
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => onCameraPositionChanged(CameraPosition.RIGHT)}
+      >
+        Вид справа
+      </Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => onCameraPositionChanged(CameraPosition.LEFT)}
+      >
+        Вид слева
       </Button>
     </div>
   );

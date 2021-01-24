@@ -6,6 +6,7 @@ export interface IElement {
     selected: boolean;
     position: IVector;
     scale: IVector;
+    data: string;
 }
 
 export interface IElements {
@@ -27,6 +28,7 @@ export interface IAddElement {
     selected: boolean;
     position: IVector;
     scale: IVector;
+    data: string;
 }
 
 export interface ISetSelectedId {

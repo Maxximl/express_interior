@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { Suspense } from "react";
-import { Canvas, CanvasContext } from "react-three-fiber";
+import { Canvas, CanvasContext, useFrame } from "react-three-fiber";
 import { Model } from "../Model/Model";
 import styles from "./World.css";
+import { CameraPosition } from "./World.types";
 import {
   Html,
   MapControls,
@@ -36,6 +37,11 @@ export const World: React.FC = () => {
   const orbit = useRef<OrbitControls>();
   const transform = useRef<TransformControls>();
   const [mode, setMode] = useState<string>("translate");
+  const [cameraPosition, setCameraPosition] = useState<Vector3>(
+    () => new Vector3(0, 0, 1.5)
+  );
+  console.log(cameraPosition);
+
   const { elements, selectedId } = useSelector((state: RootState) => {
     return {
       elements: Object.values(state.elements.elements),
@@ -43,9 +49,23 @@ export const World: React.FC = () => {
     };
   });
 
+  // useEffect(() => {
+  //   async function getImg() {
+  //     let blob = await fetch(
+  //       "https://hoff.ru/upload/iblock/76d/76ded78dee98e125a75a640ea6060a3d.jpg"
+  //     ).then((r) => r.blob());
+  //     let dataUrl = await new Promise((resolve) => {
+  //       let reader = new FileReader();
+  //       reader.onload = () => resolve(reader.result);
+  //       reader.readAsDataURL(blob);
+  //     });
+  //     // now do something with `dataUrl`
+  //   }
+  //   getImg();
+  // }, []);
+
   useEffect(() => {
     const onDelKeyPress = (event: any) => {
-      debugger;
       if (event.key === "Delete") {
         if (selectedId) {
           dispatch(deleteElement(selectedId));
@@ -97,14 +117,28 @@ export const World: React.FC = () => {
 
   const setSelected = (id: string) => (event: any): void => {
     event.stopPropagation();
-    debugger;
     if (id !== selectedId) {
       dispatch(setSelectedId(id));
     }
   };
 
-  const renderElements = (elems: IElement[]) => {
+  const handleOnCameraPostionChanged = (position: CameraPosition) => {
     debugger;
+    if (position === CameraPosition.LEFT) {
+      setCameraPosition(new Vector3(-0.9, 0, 1.5));
+    } else if (position === CameraPosition.RIGHT) {
+      setCameraPosition(new Vector3(0.7, 0, 1.5));
+    }
+  };
+  const Cam = (): any => {
+    useFrame(({ camera }) => {
+      const { x, y, z } = cameraPosition;
+      camera.position.set(x, y, z);
+    });
+    return null;
+  };
+
+  const renderElements = (elems: IElement[]) => {
     return elems.map((element) => {
       const selected = selectedId === element.id;
       const { x: posX, y: posY, z: posZ } = element.position;
@@ -125,7 +159,7 @@ export const World: React.FC = () => {
               // onClick={setSelected(element.id)}
             />
           </TransformControls>
-          <OrbitControls ref={orbit} />
+          {/* <OrbitControls ref={orbit} /> */}
         </Suspense>
       ) : (
         <Suspense fallback={<Loader />} key={element.id}>
@@ -136,7 +170,7 @@ export const World: React.FC = () => {
             position={[posX, posY, posZ]}
             scale={[scaleX, scaleY, scaleZ]}
           />
-          <OrbitControls ref={orbit} />
+          {/* <OrbitControls ref={orbit} /> */}
         </Suspense>
       );
     });
@@ -145,13 +179,14 @@ export const World: React.FC = () => {
   return (
     <div className={styles.container}>
       <Canvas
-        camera={{ position: [0, 0, 2] }}
+        camera={{ position: cameraPosition }}
         onCreated={({ gl, scene }: CanvasContext) => {
           scene.background = new THREE.Color("black");
         }}
       >
         <Stars />
-        <ambientLight intensity={0.5} />
+        {/* <Cam /> */}
+        <ambientLight intensity={0.3} />
         <spotLight intensity={0.1} position={[150, 300, 100]} />
         <Provider store={store}>
           <Room pathToTexture={pathToTexture} />
@@ -161,6 +196,7 @@ export const World: React.FC = () => {
       <Controls
         onPathToTextureChanged={handleOnPathToTextureChanged}
         handleOnToolSelected={handleOnToolSelected}
+        onCameraPositionChanged={handleOnCameraPostionChanged}
       />
     </div>
   );
