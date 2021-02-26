@@ -36,6 +36,14 @@ export const createRoom = (): AppThunk => (dispatch: AppDispatch) => {
         position: { x: 0, y: -0.5, z: 0.5 },
         rotation: { x: Math.PI / 2, y: 0, z: 0 }
     }
+    walls["roof"] = {
+        elementId: "roof",
+        pathToMaterial: "",
+        width: 2,
+        height: 3,
+        position: { x: 0, y: 0.5, z: 0.5 },
+        rotation: { x: Math.PI / 2, y: 0, z: 0 }
+    }
     dispatch(roomSliceActions.createRoom({ walls }))
 
 }

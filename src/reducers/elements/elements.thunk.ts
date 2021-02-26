@@ -12,7 +12,7 @@ export const addElement = (name: string, path: string, url: string, position: IV
         console.log(data);
 
     }
-    dispatch(elementsSliceActions.addElement({ id, name, path, selected, position, scale, data }));
+    dispatch(elementsSliceActions.addElement({ id, name, path, selected, position, scale, data: data.data }));
 }
 
 export const setSelectedId = (id: string): AppThunk => (dispatch: AppDispatch) => {

@@ -34,7 +34,7 @@ export const Wall: React.FC<IWallProps> = (props) => {
     if (texture) {
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
-      if (props.elementId === "floor") {
+      if (props.elementId === "floor" || props.elementId === "roof") {
         texture.repeat = new Vector2(10, 20);
       } else {
         texture.repeat = new Vector2(10, 5);

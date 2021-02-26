@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "@material-ui/core";
+import React, { useEffect, useRef, useState } from "react";
+import { Button, Input } from "@material-ui/core";
 import { IControlsProps } from "./Controls.type";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store";
@@ -11,7 +11,7 @@ import { Vector3 } from "three";
 import { setMaterial } from "../../reducers/room";
 import { RootState } from "../../rootReducer";
 import { CameraPosition } from "../World/World.types";
-
+import styles from "./Controls.css";
 export const Controls: React.FC<IControlsProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
   const {
@@ -19,6 +19,9 @@ export const Controls: React.FC<IControlsProps> = (props) => {
     handleOnToolSelected,
     onCameraPositionChanged,
   } = props;
+  const [value, setValue] = useState<string>("");
+
+  useEffect(() => {});
   const [pathToTexture, setPathToTexture] = useState<string>("");
   const { selectedId } = useSelector((state: RootState) => {
     return {
@@ -33,29 +36,10 @@ export const Controls: React.FC<IControlsProps> = (props) => {
     dispatch(setMaterial(selectedId, path));
   };
 
-  // useEffect(() => {
-  //   const loadImage = async () => {
-  //     const headers: HeadersInit = {};
-  //     let body1 = {
-  //       url:
-  //         "https://hoff.ru/upload/iblock/ef3/ef3527588fb3ac57ca4a48bd70cb2bef.jpg",
-  //     };
-  //     const body2 = JSON.stringify(body1);
-  //     headers["Content-Type"] = "application/json";
-  //     const response = await fetch("/download", {
-  //       method: "GET",
-  //       body: body2,
-  //       headers,
-  //     });
-  //     const data = await response.json();
-  //     console.log(data);
-  //   };
-  //   loadImage();
-  // }, []);
-
   return (
     <div>
       <Button
+        className={styles.materialControl}
         variant="contained"
         color="primary"
         onClick={() => handleOnClick("assets/white_wall.jpg")}
@@ -63,6 +47,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         Бетон
       </Button>
       <Button
+        className={styles.materialControl}
         variant="contained"
         color="primary"
         onClick={() => handleOnClick("assets/wood.jpg")}
@@ -70,6 +55,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         Дерево
       </Button>
       <Button
+        className={styles.materialControl}
         variant="contained"
         color="primary"
         onClick={() => handleOnClick("assets/old_wood.jpg")}
@@ -186,6 +172,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
       >
         Добавить кровать
       </Button>
+      <Input value={value} onChange={(e) => setValue(e.target.value)} />
       <Button
         variant="contained"
         color="primary"
@@ -194,7 +181,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
             addElement(
               "Any",
               null,
-              "https://hoff.ru/upload/iblock/ef3/ef3527588fb3ac57ca4a48bd70cb2bef.jpg",
+              value,
               { x: 0, y: 0, z: 0 },
               { x: 1, y: 1, z: 1 }
             )

@@ -143,7 +143,7 @@ export const World: React.FC = () => {
       const selected = selectedId === element.id;
       const { x: posX, y: posY, z: posZ } = element.position;
       const { x: scaleX, y: scaleY, z: scaleZ } = element.scale;
-
+      debugger;
       return selected ? (
         <Suspense fallback={<Loader />} key={element.id}>
           <TransformControls
@@ -154,7 +154,7 @@ export const World: React.FC = () => {
             onClick={setSelected(element.id)}
           >
             <Sprite
-              path={element.path}
+              path={element.path || element.data}
               elementId={element.id}
               // onClick={setSelected(element.id)}
             />
@@ -164,7 +164,7 @@ export const World: React.FC = () => {
       ) : (
         <Suspense fallback={<Loader />} key={element.id}>
           <Sprite
-            path={element.path}
+            path={element.path || element.data}
             elementId={element.id}
             onClick={setSelected(element.id)}
             position={[posX, posY, posZ]}
