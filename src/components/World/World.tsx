@@ -40,7 +40,6 @@ export const World: React.FC = () => {
   const [cameraPosition, setCameraPosition] = useState<Vector3>(
     () => new Vector3(0, 0, 1.5)
   );
-  console.log(cameraPosition);
 
   const { elements, selectedId } = useSelector((state: RootState) => {
     return {
@@ -48,21 +47,6 @@ export const World: React.FC = () => {
       selectedId: state.elements.selectedId,
     };
   });
-
-  // useEffect(() => {
-  //   async function getImg() {
-  //     let blob = await fetch(
-  //       "https://hoff.ru/upload/iblock/76d/76ded78dee98e125a75a640ea6060a3d.jpg"
-  //     ).then((r) => r.blob());
-  //     let dataUrl = await new Promise((resolve) => {
-  //       let reader = new FileReader();
-  //       reader.onload = () => resolve(reader.result);
-  //       reader.readAsDataURL(blob);
-  //     });
-  //     // now do something with `dataUrl`
-  //   }
-  //   getImg();
-  // }, []);
 
   useEffect(() => {
     const onDelKeyPress = (event: any) => {

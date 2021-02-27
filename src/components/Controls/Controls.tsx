@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../../store";
 import {
   addElement,
+  addExternalElement,
   setSelectedId,
 } from "../../reducers/elements/elements.thunk";
 import { Vector3 } from "three";
@@ -162,7 +163,6 @@ export const Controls: React.FC<IControlsProps> = (props) => {
             addElement(
               "Bed",
               "assets/bed.png",
-              null,
               { x: 0, y: 0, z: 0 },
               { x: 1, y: 1, z: 1 }
             )
@@ -178,7 +178,7 @@ export const Controls: React.FC<IControlsProps> = (props) => {
         color="primary"
         onClick={() => {
           dispatch(
-            addElement(
+            addExternalElement(
               "Any",
               null,
               value,
@@ -199,7 +199,6 @@ export const Controls: React.FC<IControlsProps> = (props) => {
             addElement(
               "Comod",
               "assets/comod.png",
-              null,
               { x: 0, y: 0, z: 0 },
               { x: 1, y: 1, z: 1 }
             )

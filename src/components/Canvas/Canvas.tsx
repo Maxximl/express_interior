@@ -108,7 +108,7 @@ export const Canvas = () => {
         },
         null,
         (error) => {
-          console.log(error);
+          console.error(error);
         }
       );
     };

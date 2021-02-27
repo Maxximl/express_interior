@@ -3,14 +3,17 @@ import { AppDispatch, AppThunk } from "../../store";
 import { nanoid } from "nanoid";
 import { IVector } from "./elements.types";
 
-export const addElement = (name: string, path: string, url: string, position: IVector, scale: IVector, selected: boolean = false): AppThunk<Promise<void>> => async (dispatch: AppDispatch) => {
+export const addElement = (name: string, path: string, position: IVector, scale: IVector, selected: boolean = false): AppThunk<Promise<void>> => async (dispatch: AppDispatch) => {
+    const id = nanoid(10);
+    dispatch(elementsSliceActions.addElement({ id, name, path, selected, position, scale, data: "" }));
+}
+
+export const addExternalElement = (name: string, path: string, url: string, position: IVector, scale: IVector, selected: boolean = false): AppThunk<Promise<void>> => async (dispatch: AppDispatch) => {
     const id = nanoid(10);
     let data;
     if (url) {
         const response = await fetch("/api/download", { method: "POST", body: JSON.stringify({ url }), headers: { 'Content-Type': 'application/json' } });
         data = await response.json();
-        console.log(data);
-
     }
     dispatch(elementsSliceActions.addElement({ id, name, path, selected, position, scale, data: data.data }));
 }

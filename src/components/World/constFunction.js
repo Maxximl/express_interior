@@ -13,6 +13,7 @@ Wolf.prototype.howl = function () {
 };
 
 function Dog(name) {
+  п;
   Wolf.call(this, name + " the dog");
 }
 
@@ -23,3 +24,8 @@ Dog.prototype.woof = function () {
 Dog.prototype = inherit(Wolf.prototype);
 Dog.prototype = Object.create(Wolf.prototype);
 Object.setPrototypeOf(Dog, Wolf);
+const doggy = new Dog();
+doggy.howl();
+doggy.woof();
+
+console.log();
